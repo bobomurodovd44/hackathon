@@ -99,6 +99,8 @@ async function completeMultipart(
   return result.url
 }
 
+const toMB = (bytes: number) => (bytes / (1024 * 1024)).toFixed(1)
+
 export async function multipartUpload(
   file: File,
   token: string,
@@ -116,7 +118,9 @@ export async function multipartUpload(
     const chunk = file.slice(start, end)
     const partNumber = i + 1
 
-    onProgress(`Uploading part ${partNumber} of ${totalParts}... (${Math.round((i / totalParts) * 100)}%)`)
+    const uploadedMB = toMB(start)
+    const totalMB = toMB(file.size)
+    onProgress(`Uploading... ${uploadedMB} MB / ${totalMB} MB`)
 
     const part = await uploadPart(chunk, uploadId, key, partNumber, token)
     parts.push(part)
