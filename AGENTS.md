@@ -3,6 +3,8 @@
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 
+# Frontend tasks
+
 When doing frontend design tasks, avoid collapsing into "AI slop" or safe, average-looking layouts.
 Aim for interfaces that feel intentional, bold, and a bit surprising.
 - Typography: Use expressive, purposeful fonts and avoid default stacks (Inter, Roboto, Arial, system).
@@ -14,6 +16,17 @@ Aim for interfaces that feel intentional, bold, and a bit surprising.
 - Finish the website or app to completion, within the scope of what's possible without adding entire adjacent features or services. It should be in a working state for a user to run and test.
 
 Exception: If working within an existing website or design system, preserve the established patterns, structure, and visual language.
+
+# Plan tool
+
+When using the planning tool:
+- Skip using the planning tool for straightforward tasks (roughly the easiest 25%).
+- Do not make single-step plans.
+- When you made a plan, update it after having performed one of the sub-tasks that you shared on the plan.
+- Unless asked for a plan, never end the interaction with only a plan. Plans guide your edits; the deliverable is working code.
+- Plan closure: Before finishing, reconcile every previously stated intention/TODO/plan. Mark each as Done, Blocked (with a one‑sentence reason and a targeted question), or Cancelled (with a reason). Do not end with in_progress/pending items. If you created todos via a tool, update their statuses accordingly.
+- Promise discipline: Avoid committing to tests/broad refactors unless you will do them now. Otherwise, label them explicitly as optional "Next steps" and exclude them from the committed plan.
+- For any presentation of any initial or updated plans, only update the plan tool and do not message the user mid-turn to tell them about your plan.
 
 # Presenting your work and final message
 
