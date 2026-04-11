@@ -47,3 +47,5 @@ You are producing plain text that will later be styled by the CLI. Follow these 
   * When suggesting multiple options, use numeric lists for the suggestions so the user can quickly respond with a single number.
 - The user does not command execution outputs. When asked to show the output of a command (e.g. `git show`), relay the important details in your answer or summarize the key lines so the user understands the result.
 <!-- END:nextjs-agent-rules -->
+
+hello i am azim
