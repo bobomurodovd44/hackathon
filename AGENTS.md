@@ -7,6 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 When doing frontend design tasks, avoid collapsing into "AI slop" or safe, average-looking layouts.
 Aim for interfaces that feel intentional, bold, and a bit surprising.
+-use shadcn ui components and tailwind css as much as possible this is very important for the project import needed components from shadcn ui! 
 - Typography: Use expressive, purposeful fonts and avoid default stacks (Inter, Roboto, Arial, system).
 - Color & Look: Choose a clear visual direction; define CSS variables; avoid purple-on-white defaults. Avoid default purple-heavy SaaS gradients unless explicitly requested.
 - Motion: Use a few meaningful animations (page-load, staggered reveals) instead of generic micro-motions.
