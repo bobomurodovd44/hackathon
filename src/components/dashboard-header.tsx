@@ -34,7 +34,9 @@ export function DashboardHeader() {
                 <React.Fragment key={href}>
                   {index > 0 && <BreadcrumbSeparator className="hidden md:block" />}
                   <BreadcrumbItem>
-                    {isLast ? (
+                    {isLast || 
+                     title === 'Companies' || 
+                     /^[0-9a-fA-F]{24}$/.test(segment) ? (
                       <BreadcrumbPage>{title}</BreadcrumbPage>
                     ) : (
                       <BreadcrumbLink href={href}>{title}</BreadcrumbLink>
