@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useEffect, useState, useCallback, useRef } from "react"
-import { Plus, Search, Loader2, Image as ImageIcon, FileUp, Pencil } from "lucide-react"
+import { Plus, Search, Loader2, Image as ImageIcon, FileUp, Pencil, BookOpen } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { client } from "@/lib/feathers"
 import api from "@/lib/api"
 import { useAuth, UserRole } from "@/lib/auth-context"
@@ -76,6 +77,7 @@ export function CompanyTrainingsClient({
   isPortal = false
 }: CompanyTrainingsClientProps) {
   const { user } = useAuth()
+  const router = useRouter()
   const [trainings, setTrainings] = useState<any[]>(initialTrainings)
   const [total, setTotal] = useState(initialTotal)
   const [isLoading, setIsLoading] = useState(false)
@@ -558,11 +560,27 @@ export function CompanyTrainingsClient({
                     {new Date(training.createdAt).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="text-right">
-                    {user?.role !== UserRole.ADMIN && (
-                      <Button variant="ghost" size="icon" onClick={() => openEditDialog(training)}>
-                        <Pencil className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                    <div className="flex justify-end gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => {
+                          if (isPortal) {
+                            router.push(`/company/trainings/${training._id}/lessons`)
+                          } else {
+                            router.push(`/admin/companies/${companyId}/trainings/${training._id}/lessons`)
+                          }
+                        }}
+                      >
+                        <BookOpen className="h-4 w-4 mr-2" />
+                        Lessons
                       </Button>
-                    )}
+                      {user?.role !== UserRole.ADMIN && (
+                        <Button variant="ghost" size="icon" onClick={() => openEditDialog(training)}>
+                          <Pencil className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
