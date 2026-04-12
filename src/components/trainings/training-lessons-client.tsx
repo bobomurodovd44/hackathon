@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useCallback, useRef } from "react"
-import { Plus, Loader2, ArrowLeft, Pencil, GripVertical } from "lucide-react"
+import { Plus, Loader2, ArrowLeft, Pencil, GripVertical, FileText } from "lucide-react"
 import Link from "next/link"
 import {
   DndContext,
@@ -119,11 +119,21 @@ function SortableTableRow({ lesson, onEdit, isEditable }: { lesson: any, onEdit:
         {new Date(lesson.createdAt).toLocaleDateString()}
       </TableCell>
       <TableCell className="text-right">
-        {isEditable && (
-          <Button variant="ghost" size="icon" onClick={() => onEdit(lesson)}>
-            <Pencil className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-          </Button>
-        )}
+        <div className="flex justify-end gap-2">
+          {isEditable && (
+            <Button variant="outline" size="sm" asChild>
+              <Link href={`${window.location.pathname}/${lesson._id}/content`}>
+                <FileText className="h-4 w-4 mr-2" />
+                Content
+              </Link>
+            </Button>
+          )}
+          {isEditable && (
+            <Button variant="ghost" size="icon" onClick={() => onEdit(lesson)}>
+              <Pencil className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+            </Button>
+          )}
+        </div>
       </TableCell>
     </TableRow>
   )
