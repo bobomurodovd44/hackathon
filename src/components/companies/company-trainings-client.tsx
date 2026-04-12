@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useEffect, useState, useCallback, useRef } from "react"
-import { ShieldCheck, Plus, Search, Loader2, Image as ImageIcon, FileUp } from "lucide-react"
+import { Plus, Search, Loader2, Image as ImageIcon, FileUp, Pencil } from "lucide-react"
 import { client } from "@/lib/feathers"
+import api from "@/lib/api"
 import { useAuth, UserRole } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -62,6 +63,11 @@ const SPEC_OPTIONS = [
   { value: 'human-resources', label: 'Human Resources' }
 ]
 
+const STATUS_OPTIONS = [
+  { value: 'active', label: 'Active' },
+  { value: 'draft', label: 'Draft' }
+]
+
 export function CompanyTrainingsClient({ 
   companyId, 
   companyName, 
@@ -78,9 +84,26 @@ export function CompanyTrainingsClient({
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [selectedImageId, setSelectedImageId] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  
+  // Edit Form State
+  const [editingTraining, setEditingTraining] = useState<any | null>(null)
+  const [editFormTitle, setEditFormTitle] = useState("")
+  const [editFormDescription, setEditFormDescription] = useState("")
+  const [editFormSpec, setEditFormSpec] = useState("sales-department")
+  const [editFormStatus, setEditFormStatus] = useState("active")
+  const [editSelectedFile, setEditSelectedFile] = useState<File | null>(null)
+  const [editImagePreview, setEditImagePreview] = useState<string | null>(null)
+  const [isEditUploading, setIsEditUploading] = useState(false)
+  const editFileInputRef = useRef<HTMLInputElement>(null)
+
+  // Controlled form state to survive async operations
+  const [formTitle, setFormTitle] = useState("")
+  const [formDescription, setFormDescription] = useState("")
+  const [formSpec, setFormSpec] = useState("sales-department")
+  const [formStatus, setFormStatus] = useState("active")
 
   const fetchTrainings = useCallback(async () => {
     setIsLoading(true)
@@ -118,70 +141,138 @@ export function CompanyTrainingsClient({
     }
   }, [fetchTrainings, search, page, limit])
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
+    // Limit to 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File is too large. Maximum size is 5MB.")
+      return
+    }
+
+    setSelectedFile(file)
+    
+    // Create preview
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleAddTraining = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!selectedFile) {
+      alert("Please select an image first")
+      return
+    }
+
+    // Capture form values BEFORE any await — React nullifies e.currentTarget after async
+    const title = formTitle
+    const description = formDescription
+    const spec = formSpec
+    const status = formStatus
+
     setIsUploading(true)
+    let imageId = null
+
     try {
-      // Create preview
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+      // 1. Upload the image using the axios instance (reads JWT from cookie automatically)
+      const uploadFormData = new FormData()
+      uploadFormData.append('file', selectedFile)
 
-      // In a real environment, we'd use FormData to hit the /uploads service
-      // Feathers Client usually handles this if configured, but let's do a direct fetch for reliably
-      const formData = new FormData()
-      formData.append('file', file)
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3030'}/uploads`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('feathers-jwt') || ''}`
-        }
+      const uploadResponse = await api.post('/uploads', uploadFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       })
 
-      if (!response.ok) throw new Error('Upload failed')
-      
-      const result = await response.json()
-      setSelectedImageId(result._id)
-    } catch (error) {
-      console.error("Error uploading image:", error)
-      alert("Failed to upload image")
+      imageId = uploadResponse.data._id
+
+      // 2. Create the training record using captured values
+      await client.service("trainings").create({
+        title,
+        description,
+        image: imageId,
+        spec,
+        status,
+        companyId,
+      })
+
+      setIsAddDialogOpen(false)
+      setSelectedFile(null)
       setImagePreview(null)
+      setFormTitle("")
+      setFormDescription("")
+      setFormSpec("sales-department")
+      setFormStatus("active")
+      fetchTrainings()
+    } catch (error) {
+      console.error("Error creating training:", error)
+      alert("Failed to create training. Check console for details.")
     } finally {
       setIsUploading(false)
     }
   }
 
-  const handleAddTraining = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!selectedImageId) {
-      alert("Please upload an image first")
+  const openEditDialog = (training: any) => {
+    setEditingTraining(training)
+    setEditFormTitle(training.title)
+    setEditFormDescription(training.description)
+    setEditFormSpec(training.spec || "sales-department")
+    setEditFormStatus(training.status || "active")
+    setEditSelectedFile(null)
+    setEditImagePreview(training.image_url || null)
+  }
+
+  const handleEditImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File is too large. Maximum size is 5MB.")
       return
     }
+    setEditSelectedFile(file)
+    const reader = new FileReader()
+    reader.onloadend = () => setEditImagePreview(reader.result as string)
+    reader.readAsDataURL(file)
+  }
 
-    const formData = new FormData(e.currentTarget)
-    const data = {
-      title: formData.get("title"),
-      description: formData.get("description"),
-      image: selectedImageId,
-      spec: formData.get("spec"),
-      companyId: companyId,
-    }
+  const handleEditTraining = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!editingTraining) return
 
+    const title = editFormTitle
+    const description = editFormDescription
+    const spec = editFormSpec
+    const status = editFormStatus
+
+    setIsEditUploading(true)
     try {
-      await client.service("trainings").create(data)
-      setIsAddDialogOpen(false)
-      setSelectedImageId(null)
-      setImagePreview(null)
+      let imageId = editingTraining.image
+      if (editSelectedFile) {
+        const uploadFormData = new FormData()
+        uploadFormData.append('file', editSelectedFile)
+        const uploadResponse = await api.post('/uploads', uploadFormData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        imageId = uploadResponse.data._id
+      }
+
+      await client.service("trainings").patch(editingTraining._id, {
+        title,
+        description,
+        image: imageId,
+        spec,
+        status
+      })
+
+      setEditingTraining(null)
       fetchTrainings()
     } catch (error) {
       console.error("Error creating training:", error)
-      alert("Failed to create training. Check console for details.")
+      alert("Failed to update training.")
+    } finally {
+      setIsEditUploading(false)
     }
   }
 
@@ -208,19 +299,26 @@ export function CompanyTrainingsClient({
                 Add Training
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
-              <form onSubmit={handleAddTraining}>
-                <DialogHeader>
+            <DialogContent className="sm:max-w-[500px] max-h-[90vh] flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <form onSubmit={handleAddTraining} className="flex flex-col flex-1 overflow-hidden">
+                <DialogHeader className="shrink-0">
                   <DialogTitle>Add New Training</DialogTitle>
                   <DialogDescription>
                     Create a new training material for {companyName}.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
+                <div className="grid gap-4 py-4 overflow-y-auto flex-1 px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                   <FieldGroup>
                     <Field>
                       <FieldLabel htmlFor="title">Title</FieldLabel>
-                      <Input id="title" name="title" placeholder="e.g. Sales Onboarding" required />
+                      <Input 
+                        id="title" 
+                        name="title" 
+                        placeholder="e.g. Sales Onboarding" 
+                        required 
+                        value={formTitle}
+                        onChange={(e) => setFormTitle(e.target.value)}
+                      />
                     </Field>
                     <Field>
                       <FieldLabel htmlFor="description">Description</FieldLabel>
@@ -230,12 +328,14 @@ export function CompanyTrainingsClient({
                         placeholder="What will users learn?" 
                         className="min-h-[100px]"
                         required 
+                        value={formDescription}
+                        onChange={(e) => setFormDescription(e.target.value)}
                       />
                     </Field>
                     <div className="grid grid-cols-2 gap-4">
                       <Field>
                         <FieldLabel htmlFor="spec">Department (Specialization)</FieldLabel>
-                        <Select name="spec" defaultValue="sales-department">
+                        <Select name="spec" value={formSpec} onValueChange={setFormSpec}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select department" />
                           </SelectTrigger>
@@ -247,6 +347,21 @@ export function CompanyTrainingsClient({
                         </Select>
                       </Field>
                       <Field>
+                        <FieldLabel htmlFor="status">Status</FieldLabel>
+                        <Select name="status" value={formStatus} onValueChange={setFormStatus}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {STATUS_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                      <Field>
                         <FieldLabel>Training Image</FieldLabel>
                         <div className="flex items-center gap-2">
                           <Button 
@@ -257,7 +372,7 @@ export function CompanyTrainingsClient({
                             disabled={isUploading}
                           >
                             {isUploading ? <Loader2 className="size-4 animate-spin" /> : <FileUp className="size-4" />}
-                            {selectedImageId ? "Change Image" : "Upload Image"}
+                            {selectedFile ? "Change Image" : "Upload Image"}
                           </Button>
                           <input 
                             type="file" 
@@ -276,11 +391,104 @@ export function CompanyTrainingsClient({
                     )}
                   </FieldGroup>
                 </div>
-                <DialogFooter>
+                <DialogFooter className="shrink-0 pt-4">
                   <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
                     Cancel
                   </Button>
                   <Button type="submit" disabled={isUploading}>Create Training</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {user?.role !== UserRole.ADMIN && (
+          <Dialog open={!!editingTraining} onOpenChange={(open) => !open && setEditingTraining(null)}>
+            <DialogContent className="sm:max-w-[500px] max-h-[90vh] flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <form onSubmit={handleEditTraining} className="flex flex-col flex-1 overflow-hidden">
+                <DialogHeader className="shrink-0">
+                  <DialogTitle>Edit Training</DialogTitle>
+                  <DialogDescription>Make changes to the training material.</DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4 overflow-y-auto flex-1 px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                  <FieldGroup>
+                    <Field>
+                      <FieldLabel htmlFor="edit-title">Title</FieldLabel>
+                      <Input
+                        id="edit-title"
+                        required
+                        value={editFormTitle}
+                        onChange={(e) => setEditFormTitle(e.target.value)}
+                      />
+                    </Field>
+                    <Field>
+                      <FieldLabel htmlFor="edit-description">Description</FieldLabel>
+                      <Textarea
+                        id="edit-description"
+                        className="min-h-[100px]"
+                        required
+                        value={editFormDescription}
+                        onChange={(e) => setEditFormDescription(e.target.value)}
+                      />
+                    </Field>
+                    <div className="grid grid-cols-2 gap-4">
+                      <Field>
+                        <FieldLabel>Department</FieldLabel>
+                        <Select value={editFormSpec} onValueChange={setEditFormSpec}>
+                          <SelectTrigger><SelectValue placeholder="Select department" /></SelectTrigger>
+                          <SelectContent>
+                            {SPEC_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                      <Field>
+                        <FieldLabel>Status</FieldLabel>
+                        <Select value={editFormStatus} onValueChange={setEditFormStatus}>
+                          <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
+                          <SelectContent>
+                            {STATUS_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                      <Field>
+                        <FieldLabel>Training Image</FieldLabel>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full gap-2"
+                            onClick={() => editFileInputRef.current?.click()}
+                            disabled={isEditUploading}
+                          >
+                            {isEditUploading ? <Loader2 className="size-4 animate-spin" /> : <FileUp className="size-4" />}
+                            Change Image
+                          </Button>
+                          <input
+                            type="file"
+                            ref={editFileInputRef}
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleEditImageUpload}
+                          />
+                        </div>
+                      </Field>
+                    </div>
+                    {editImagePreview && (
+                      <div className="mt-2 relative rounded-md overflow-hidden border bg-muted aspect-video flex items-center justify-center">
+                        <img src={editImagePreview} alt="Preview" className="object-cover w-full h-full" />
+                      </div>
+                    )}
+                  </FieldGroup>
+                </div>
+                <DialogFooter className="shrink-0 pt-4">
+                  <Button type="button" variant="outline" onClick={() => setEditingTraining(null)}>Cancel</Button>
+                  <Button type="submit" disabled={isEditUploading}>Save Changes</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -295,7 +503,9 @@ export function CompanyTrainingsClient({
               <TableHead className="w-[80px]">Image</TableHead>
               <TableHead>Title</TableHead>
               <TableHead>Department</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead className="text-right">Created At</TableHead>
+              <TableHead className="w-[80px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -339,8 +549,20 @@ export function CompanyTrainingsClient({
                       {SPEC_OPTIONS.find(o => o.value === training.spec)?.label || training.spec}
                     </Badge>
                   </TableCell>
+                  <TableCell>
+                    <Badge variant={training.status === 'active' ? 'default' : 'secondary'}>
+                      {STATUS_OPTIONS.find(o => o.value === training.status)?.label || training.status || 'Active'}
+                    </Badge>
+                  </TableCell>
                   <TableCell className="text-right text-muted-foreground text-xs">
                     {new Date(training.createdAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {user?.role !== UserRole.ADMIN && (
+                      <Button variant="ghost" size="icon" onClick={() => openEditDialog(training)}>
+                        <Pencil className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))
