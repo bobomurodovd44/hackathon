@@ -5,6 +5,7 @@ import {
   ChevronUp,
   Home,
   LayoutDashboard,
+  LogOut,
   Settings,
   ShieldCheck,
   User,
@@ -32,15 +33,24 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { useAuth, UserRole } from "@/lib/auth-context"
 
 const navItems = [
-  { title: "Admin Portal", url: "/admin", icon: ShieldCheck },
-  { title: "Company", url: "/company", icon: Building2 },
-  { title: "My Profile", url: "/user", icon: User },
-  { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Admin Portal", url: "/admin", icon: ShieldCheck, roles: [UserRole.ADMIN] },
+  { title: "Company", url: "/company", icon: Building2, roles: [UserRole.ADMIN, UserRole.COMPANY_ADMIN] },
+  { title: "My Profile", url: "/user", icon: User, roles: [UserRole.ADMIN, UserRole.COMPANY_ADMIN, UserRole.WORKER] },
+  { title: "Settings", url: "/settings", icon: Settings, roles: [UserRole.ADMIN, UserRole.COMPANY_ADMIN, UserRole.WORKER] },
 ]
 
 export function AppSidebar() {
+  const { user, logout } = useAuth()
+  
+  const filteredNavItems = navItems.filter(item => 
+    !item.roles || (user && item.roles.includes(user.role as UserRole))
+  )
+
+  const initials = user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : "U"
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -53,7 +63,7 @@ export function AppSidebar() {
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Hackathon</span>
-                  <span className="text-xs text-muted-foreground">Admin Dashboard</span>
+                  <span className="text-xs text-muted-foreground">Portal</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -66,7 +76,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
+              {filteredNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <a href={item.url}>
@@ -91,11 +101,15 @@ export function AppSidebar() {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
-                    A
+                    {initials}
                   </div>
                   <div className="flex flex-col gap-0.5 leading-none text-left">
-                    <span className="font-semibold">Admin User</span>
-                    <span className="text-xs text-muted-foreground truncate">admin@hackathon.com</span>
+                    <span className="font-semibold truncate">
+                      {user ? `${user.firstName} ${user.lastName}` : "User"}
+                    </span>
+                    <span className="text-xs text-muted-foreground truncate">
+                      {user?.email || "user@example.com"}
+                    </span>
                   </div>
                   <ChevronUp className="ml-auto size-4" />
                 </SidebarMenuButton>
@@ -120,7 +134,10 @@ export function AppSidebar() {
                   </a>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Sign out</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => logout()}>
+                  <LogOut className="mr-2 size-4" />
+                  Sign out
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

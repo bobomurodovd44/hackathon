@@ -1,11 +1,9 @@
-'use client'
-
-import { useState } from 'react'
+import { AuthGuard } from '@/components/auth-guard'
 
 export default function Home() {
-
-
   return (
-    <h1>Home</h1>
+    <AuthGuard variant="public">
+      <h1>Home</h1>
+    </AuthGuard>
   )
 }
