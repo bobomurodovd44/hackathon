@@ -1,11 +1,12 @@
 'use client'
 
 import {
-  BookOpen,
+  Building2,
   ChevronUp,
-  GraduationCap,
   Home,
+  LayoutDashboard,
   Settings,
+  ShieldCheck,
   User,
   Users,
 } from "lucide-react"
@@ -33,11 +34,10 @@ import {
 } from "@/components/ui/sidebar"
 
 const navItems = [
-  { title: "Dashboard", url: "/teacher", icon: Home },
-  { title: "Students", url: "/student", icon: Users },
-  { title: "Courses", url: "/teacher/courses", icon: BookOpen },
-  { title: "Grades", url: "/teacher/grades", icon: GraduationCap },
-  { title: "Settings", url: "/teacher/settings", icon: Settings },
+  { title: "Admin Portal", url: "/admin", icon: ShieldCheck },
+  { title: "Company", url: "/company", icon: Building2 },
+  { title: "My Profile", url: "/user", icon: User },
+  { title: "Settings", url: "/settings", icon: Settings },
 ]
 
 export function AppSidebar() {
@@ -47,13 +47,13 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="/teacher">
+              <a href="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <GraduationCap className="size-4" />
+                  <LayoutDashboard className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">EduPanel</span>
-                  <span className="text-xs text-muted-foreground">Teacher Portal</span>
+                  <span className="font-semibold">Hackathon</span>
+                  <span className="text-xs text-muted-foreground">Admin Dashboard</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -70,7 +70,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <a href={item.url}>
-                      <item.icon />
+                      <item.icon className="size-4" />
                       <span>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
@@ -91,11 +91,11 @@ export function AppSidebar() {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
-                    T
+                    A
                   </div>
                   <div className="flex flex-col gap-0.5 leading-none text-left">
-                    <span className="font-semibold">Teacher</span>
-                    <span className="text-xs text-muted-foreground truncate">teacher@edu.com</span>
+                    <span className="font-semibold">Admin User</span>
+                    <span className="text-xs text-muted-foreground truncate">admin@hackathon.com</span>
                   </div>
                   <ChevronUp className="ml-auto size-4" />
                 </SidebarMenuButton>
@@ -108,13 +108,13 @@ export function AppSidebar() {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <a href="/teacher/profile">
+                  <a href="/user">
                     <User className="mr-2 size-4" />
                     Profile
                   </a>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <a href="/teacher/settings">
+                  <a href="/settings">
                     <Settings className="mr-2 size-4" />
                     Settings
                   </a>
