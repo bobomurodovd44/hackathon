@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useCallback, useRef } from "react"
-import { Building2, Plus, Search, Loader2 } from "lucide-react"
+import { Building2, Plus, Search, Loader2, Users, ShieldCheck } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { client } from "@/lib/feathers"
 import { Button } from "@/components/ui/button"
@@ -244,14 +244,15 @@ export function CompaniesClient({ initialCompanies, initialTotal }: CompaniesCli
               <TableHead>Company Name</TableHead>
               <TableHead>Industry</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="text-right">Max Workers</TableHead>
-              <TableHead className="text-right">Created At</TableHead>
+              <TableHead>Max Workers</TableHead>
+              <TableHead>Created At</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
+                <TableCell colSpan={6} className="h-24 text-center">
                   <div className="flex items-center justify-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Loading companies...
@@ -260,7 +261,7 @@ export function CompaniesClient({ initialCompanies, initialTotal }: CompaniesCli
               </TableRow>
             ) : companies.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
+                <TableCell colSpan={6} className="h-24 text-center">
                   No companies found.
                 </TableCell>
               </TableRow>
@@ -268,8 +269,7 @@ export function CompaniesClient({ initialCompanies, initialTotal }: CompaniesCli
               companies.map((company) => (
                 <TableRow 
                   key={company._id}
-                  className="cursor-pointer hover:bg-muted/50 transition-colors"
-                  onClick={() => router.push(`/admin/companies/${company._id}/users`)}
+                  className="hover:bg-muted/50 transition-colors"
                 >
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-2">
@@ -283,14 +283,32 @@ export function CompaniesClient({ initialCompanies, initialTotal }: CompaniesCli
                   <TableCell>
                     <Badge variant={
                       company.status === 'active' ? 'success' : 
-                      company.status === 'suspended' ? 'destructive' : 'secondary'
+                      company.status === 'inactive' ? 'secondary' : 'destructive'
                     }>
                       {company.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">{company.maxWorkers}</TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {new Date(company.createdAt).toLocaleDateString()}
+                  <TableCell>{company.maxWorkers}</TableCell>
+                  <TableCell>{new Date(company.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => router.push(`/admin/companies/${company._id}/users`)}
+                      >
+                        <Users className="size-4 mr-2" />
+                        Users
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => router.push(`/admin/companies/${company._id}/trainings`)}
+                      >
+                        <ShieldCheck className="size-4 mr-2" />
+                        Trainings
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
