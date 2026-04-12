@@ -25,9 +25,6 @@ export function DashboardHeader() {
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
-            </BreadcrumbItem>
             {segments.map((segment, index) => {
               const href = `/${segments.slice(0, index + 1).join('/')}`
               const isLast = index === segments.length - 1
@@ -35,7 +32,7 @@ export function DashboardHeader() {
 
               return (
                 <React.Fragment key={href}>
-                  <BreadcrumbSeparator className="hidden md:block" />
+                  {index > 0 && <BreadcrumbSeparator className="hidden md:block" />}
                   <BreadcrumbItem>
                     {isLast ? (
                       <BreadcrumbPage>{title}</BreadcrumbPage>
