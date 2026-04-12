@@ -310,7 +310,7 @@ export function CompanyTrainingsClient({
                 <div className="grid gap-4 py-4 overflow-y-auto flex-1 px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                   <FieldGroup>
                     <Field>
-                      <FieldLabel htmlFor="title">Title</FieldLabel>
+                      <FieldLabel htmlFor="title">Title <span className="text-destructive">*</span></FieldLabel>
                       <Input 
                         id="title" 
                         name="title" 
@@ -321,7 +321,7 @@ export function CompanyTrainingsClient({
                       />
                     </Field>
                     <Field>
-                      <FieldLabel htmlFor="description">Description</FieldLabel>
+                      <FieldLabel htmlFor="description">Description <span className="text-destructive">*</span></FieldLabel>
                       <Textarea 
                         id="description" 
                         name="description" 
@@ -334,7 +334,7 @@ export function CompanyTrainingsClient({
                     </Field>
                     <div className="grid grid-cols-2 gap-4">
                       <Field>
-                        <FieldLabel htmlFor="spec">Department (Specialization)</FieldLabel>
+                        <FieldLabel htmlFor="spec">Department (Specialization) <span className="text-destructive">*</span></FieldLabel>
                         <Select name="spec" value={formSpec} onValueChange={setFormSpec}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select department" />
@@ -347,7 +347,7 @@ export function CompanyTrainingsClient({
                         </Select>
                       </Field>
                       <Field>
-                        <FieldLabel htmlFor="status">Status</FieldLabel>
+                        <FieldLabel htmlFor="status">Status <span className="text-destructive">*</span></FieldLabel>
                         <Select name="status" value={formStatus} onValueChange={setFormStatus}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select status" />
@@ -362,7 +362,7 @@ export function CompanyTrainingsClient({
                     </div>
                     <div className="grid grid-cols-1 gap-4">
                       <Field>
-                        <FieldLabel>Training Image</FieldLabel>
+                        <FieldLabel>Training Image <span className="text-destructive">*</span></FieldLabel>
                         <div className="flex items-center gap-2">
                           <Button 
                             type="button" 
@@ -413,7 +413,7 @@ export function CompanyTrainingsClient({
                 <div className="grid gap-4 py-4 overflow-y-auto flex-1 px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                   <FieldGroup>
                     <Field>
-                      <FieldLabel htmlFor="edit-title">Title</FieldLabel>
+                      <FieldLabel htmlFor="edit-title">Title <span className="text-destructive">*</span></FieldLabel>
                       <Input
                         id="edit-title"
                         required
@@ -422,7 +422,7 @@ export function CompanyTrainingsClient({
                       />
                     </Field>
                     <Field>
-                      <FieldLabel htmlFor="edit-description">Description</FieldLabel>
+                      <FieldLabel htmlFor="edit-description">Description <span className="text-destructive">*</span></FieldLabel>
                       <Textarea
                         id="edit-description"
                         className="min-h-[100px]"
@@ -433,7 +433,7 @@ export function CompanyTrainingsClient({
                     </Field>
                     <div className="grid grid-cols-2 gap-4">
                       <Field>
-                        <FieldLabel>Department</FieldLabel>
+                        <FieldLabel>Department <span className="text-destructive">*</span></FieldLabel>
                         <Select value={editFormSpec} onValueChange={setEditFormSpec}>
                           <SelectTrigger><SelectValue placeholder="Select department" /></SelectTrigger>
                           <SelectContent>
@@ -444,7 +444,7 @@ export function CompanyTrainingsClient({
                         </Select>
                       </Field>
                       <Field>
-                        <FieldLabel>Status</FieldLabel>
+                        <FieldLabel>Status <span className="text-destructive">*</span></FieldLabel>
                         <Select value={editFormStatus} onValueChange={setEditFormStatus}>
                           <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
                           <SelectContent>

@@ -161,16 +161,16 @@ export function CompaniesClient({ initialCompanies, initialTotal }: CompaniesCli
               </DialogHeader>
               <FieldGroup className="py-4">
                 <Field>
-                  <FieldLabel htmlFor="name">Company Name</FieldLabel>
+                  <FieldLabel htmlFor="name">Company Name <span className="text-destructive">*</span></FieldLabel>
                   <Input id="name" name="name" placeholder="Acme Inc." required />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="industry">Industry</FieldLabel>
+                  <FieldLabel htmlFor="industry">Industry <span className="text-destructive">*</span></FieldLabel>
                   <Input id="industry" name="industry" placeholder="Technology" required />
                 </Field>
                 <div className="grid grid-cols-2 gap-4">
                   <Field>
-                    <FieldLabel htmlFor="status">Initial Status</FieldLabel>
+                    <FieldLabel htmlFor="status">Initial Status <span className="text-destructive">*</span></FieldLabel>
                     <Select name="status" defaultValue="active">
                       <SelectTrigger>
                         <SelectValue placeholder="Select status" />
@@ -183,7 +183,7 @@ export function CompaniesClient({ initialCompanies, initialTotal }: CompaniesCli
                     </Select>
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="maxWorkers">Max Workers</FieldLabel>
+                    <FieldLabel htmlFor="maxWorkers">Max Workers <span className="text-destructive">*</span></FieldLabel>
                     <Input 
                       id="maxWorkers" 
                       name="maxWorkers" 

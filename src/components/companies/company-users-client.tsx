@@ -180,27 +180,27 @@ export function CompanyUsersClient({
                 <FieldGroup className="py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <Field>
-                      <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                      <FieldLabel htmlFor="firstName">First Name <span className="text-destructive">*</span></FieldLabel>
                       <Input id="firstName" name="firstName" placeholder="John" required />
                     </Field>
                     <Field>
-                      <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                      <FieldLabel htmlFor="lastName">Last Name <span className="text-destructive">*</span></FieldLabel>
                       <Input id="lastName" name="lastName" placeholder="Doe" required />
                     </Field>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <Field>
-                      <FieldLabel htmlFor="email">Email</FieldLabel>
+                      <FieldLabel htmlFor="email">Email <span className="text-destructive">*</span></FieldLabel>
                       <Input id="email" name="email" type="email" placeholder="john@example.com" required />
                     </Field>
                     <Field>
-                      <FieldLabel htmlFor="password">Password</FieldLabel>
+                      <FieldLabel htmlFor="password">Password <span className="text-destructive">*</span></FieldLabel>
                       <Input id="password" name="password" type="password" placeholder="••••••••" required />
                     </Field>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <Field>
-                      <FieldLabel htmlFor="age">Age</FieldLabel>
+                      <FieldLabel htmlFor="age">Age <span className="text-destructive">*</span></FieldLabel>
                       <Input 
                         id="age" 
                         name="age" 
