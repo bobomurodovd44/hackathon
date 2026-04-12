@@ -36,8 +36,9 @@ import {
 import { useAuth, UserRole } from "@/lib/auth-context"
 
 const navItems = [
-  { title: "Admin Portal", url: "/admin", icon: ShieldCheck, roles: [UserRole.ADMIN] },
-  { title: "Company", url: "/company", icon: Building2, roles: [UserRole.ADMIN, UserRole.COMPANY_ADMIN] },
+  { title: "Dashboard", url: "/admin", icon: ShieldCheck, roles: [UserRole.ADMIN] },
+  { title: "Companies", url: "/admin/companies", icon: Building2, roles: [UserRole.ADMIN] },
+  { title: "Company Portal", url: "/company", icon: Building2, roles: [UserRole.COMPANY_ADMIN] },
   { title: "My Profile", url: "/user", icon: User, roles: [UserRole.ADMIN, UserRole.COMPANY_ADMIN, UserRole.WORKER] },
   { title: "Settings", url: "/settings", icon: Settings, roles: [UserRole.ADMIN, UserRole.COMPANY_ADMIN, UserRole.WORKER] },
 ]
