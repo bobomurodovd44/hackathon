@@ -6,7 +6,7 @@ export type UploadProgressCallback = (message: string) => void
 export async function singleUpload(
   file: File,
   token: string
-): Promise<string> {
+): Promise<any> {
   const formData = new FormData()
   formData.append('file', file)
 
@@ -22,7 +22,7 @@ export async function singleUpload(
   }
 
   const result = await response.json()
-  return result.url
+  return result
 }
 
 async function initiateMultipart(
@@ -80,7 +80,7 @@ async function completeMultipart(
   parts: { ETag: string; PartNumber: number }[],
   mimeType: string,
   token: string
-): Promise<string> {
+): Promise<any> {
   const res = await fetch(`${BASE_URL}/uploads`, {
     method: 'POST',
     headers: {
@@ -96,7 +96,7 @@ async function completeMultipart(
   }
 
   const result = await res.json()
-  return result.url
+  return result
 }
 
 const toMB = (bytes: number) => (bytes / (1024 * 1024)).toFixed(1)
@@ -105,7 +105,7 @@ export async function multipartUpload(
   file: File,
   token: string,
   onProgress: UploadProgressCallback
-): Promise<string> {
+): Promise<any> {
   onProgress('Initiating multipart upload...')
   const { uploadId, key } = await initiateMultipart(file.name, token)
 
@@ -134,7 +134,7 @@ export async function uploadFile(
   file: File,
   token: string,
   onProgress: UploadProgressCallback
-): Promise<string> {
+): Promise<any> {
   if (file.size <= CHUNK_SIZE) {
     onProgress('Uploading...')
     return singleUpload(file, token)
