@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback, useRef } from "react"
 import { Building2, Plus, Search, Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { client } from "@/lib/feathers"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -52,6 +53,7 @@ interface CompaniesClientProps {
 }
 
 export function CompaniesClient({ initialCompanies, initialTotal }: CompaniesClientProps) {
+  const router = useRouter()
   const [companies, setCompanies] = useState<any[]>(initialCompanies)
   const [total, setTotal] = useState(initialTotal)
   const [isLoading, setIsLoading] = useState(false)
@@ -264,7 +266,11 @@ export function CompaniesClient({ initialCompanies, initialTotal }: CompaniesCli
               </TableRow>
             ) : (
               companies.map((company) => (
-                <TableRow key={company._id}>
+                <TableRow 
+                  key={company._id}
+                  className="cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => router.push(`/admin/companies/${company._id}/users`)}
+                >
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-2">
                       <div className="flex h-8 w-8 items-center justify-center rounded bg-muted">
