@@ -36,6 +36,7 @@ export function DashboardHeader() {
                   <BreadcrumbItem>
                     {isLast || 
                      title === 'Companies' || 
+                     title === 'Lessons' ||
                      /^[0-9a-fA-F]{24}$/.test(segment) ? (
                       <BreadcrumbPage>{title}</BreadcrumbPage>
                     ) : (
