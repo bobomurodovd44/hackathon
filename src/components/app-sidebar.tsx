@@ -48,12 +48,9 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="/teacher">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <GraduationCap className="size-4" />
-                </div>
+                <img src="/logo.svg" alt="Climb AI Logo" className="size-8 object-contain" />
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">EduPanel</span>
-                  <span className="text-xs text-muted-foreground">Teacher Portal</span>
+                  <span className="font-semibold text-lg">Climb AI</span>
                 </div>
               </a>
             </SidebarMenuButton>

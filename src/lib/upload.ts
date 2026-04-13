@@ -1,12 +1,23 @@
-const BASE_URL = 'http://localhost:3030'
+const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost'
+const BASE_URL = `http://${host}:3030`
 const CHUNK_SIZE = 5 * 1024 * 1024 // 5MB
 
 export type UploadProgressCallback = (message: string) => void
 
-export async function singleUpload(
-  file: File,
-  token: string
-): Promise<string> {
+export type UploadResult = {
+  _id: string
+  url: string
+}
+
+const toUploadResult = (payload: unknown): UploadResult => {
+  const data = payload as { _id?: string; id?: string; url?: string }
+  return {
+    _id: data._id || data.id || '',
+    url: data.url || ''
+  }
+}
+
+export async function singleUpload(file: File, token: string): Promise<UploadResult> {
   const formData = new FormData()
   formData.append('file', file)
 
@@ -18,17 +29,15 @@ export async function singleUpload(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}))
-    throw new Error(error.message || `Error: ${response.statusText}`)
+    const message = (error as { message?: string }).message || `Error: ${response.statusText}`
+    throw new Error(message)
   }
 
   const result = await response.json()
-  return result.url
+  return toUploadResult(result)
 }
 
-async function initiateMultipart(
-  filename: string,
-  token: string
-): Promise<{ uploadId: string; key: string }> {
+async function initiateMultipart(filename: string, token: string): Promise<{ uploadId: string; key: string }> {
   const res = await fetch(`${BASE_URL}/uploads`, {
     method: 'POST',
     headers: {
@@ -40,7 +49,8 @@ async function initiateMultipart(
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({}))
-    throw new Error(`Initiation failed: ${error.message || res.statusText}`)
+    const message = (error as { message?: string }).message || res.statusText
+    throw new Error(`Initiation failed: ${message}`)
   }
 
   return res.json()
@@ -67,11 +77,12 @@ async function uploadPart(
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({}))
-    throw new Error(`Part ${partNumber} failed: ${error.message || res.statusText}`)
+    const message = (error as { message?: string }).message || res.statusText
+    throw new Error(`Part ${partNumber} failed: ${message}`)
   }
 
-  const { ETag } = await res.json()
-  return { ETag, PartNumber: partNumber }
+  const body = await res.json() as { ETag: string }
+  return { ETag: body.ETag, PartNumber: partNumber }
 }
 
 async function completeMultipart(
@@ -80,7 +91,7 @@ async function completeMultipart(
   parts: { ETag: string; PartNumber: number }[],
   mimeType: string,
   token: string
-): Promise<string> {
+): Promise<UploadResult> {
   const res = await fetch(`${BASE_URL}/uploads`, {
     method: 'POST',
     headers: {
@@ -92,11 +103,12 @@ async function completeMultipart(
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({}))
-    throw new Error(`Completion failed: ${error.message || res.statusText}`)
+    const message = (error as { message?: string }).message || res.statusText
+    throw new Error(`Completion failed: ${message}`)
   }
 
   const result = await res.json()
-  return result.url
+  return toUploadResult(result)
 }
 
 const toMB = (bytes: number) => (bytes / (1024 * 1024)).toFixed(1)
@@ -105,7 +117,7 @@ export async function multipartUpload(
   file: File,
   token: string,
   onProgress: UploadProgressCallback
-): Promise<string> {
+): Promise<UploadResult> {
   onProgress('Initiating multipart upload...')
   const { uploadId, key } = await initiateMultipart(file.name, token)
 
@@ -134,7 +146,7 @@ export async function uploadFile(
   file: File,
   token: string,
   onProgress: UploadProgressCallback
-): Promise<string> {
+): Promise<UploadResult> {
   if (file.size <= CHUNK_SIZE) {
     onProgress('Uploading...')
     return singleUpload(file, token)

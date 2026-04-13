@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { I18nProvider } from '@/i18n/provider'
+import { LandingPageContent } from '@/components/landing-page-content'
 
-export default function Home() {
-
-
+export default function LandingPage() {
   return (
-    <h1>Home</h1>
+    <I18nProvider initialLang="uz">
+      <LandingPageContent />
+    </I18nProvider>
   )
 }

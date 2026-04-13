@@ -6,18 +6,21 @@ import io from 'socket.io-client'
 import api from './api'
 import { cookieStorage } from './storage'
 
-const socket = io('http://localhost:3030', {
+const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost'
+const apiBase = `http://${host}:3030`
+
+const socket = io(apiBase, {
   transports: ['websocket']
 })
 
 // The Feathers client application
-const client = feathers()
+export const client = feathers()
 
 // Configure Socket.io transport
 const socketClient = socketio(socket)
 
 // Configure REST transport (using our axios instance)
-const restClient = rest('http://localhost:3030').axios(api)
+const restClient = rest(apiBase).axios(api)
 
 // By default we use socketio, but restClient is available
 client.configure(socketClient)
@@ -28,5 +31,5 @@ client.configure(auth({
   storageKey: 'feathers-jwt'
 }))
 
-export { client, restClient, socketClient }
+export { restClient, socketClient }
 
