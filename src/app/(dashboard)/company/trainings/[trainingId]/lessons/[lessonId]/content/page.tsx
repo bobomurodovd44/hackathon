@@ -2,6 +2,7 @@ import React from "react"
 import { ShieldCheck } from "lucide-react"
 import { serverFetch } from "@/lib/server-api"
 import { LessonContentClient } from "@/components/trainings/lesson-content-client"
+import { LessonQuizClient } from "@/components/trainings/lesson-quiz-client"
 
 export const dynamic = 'force-dynamic'
 
@@ -28,9 +29,21 @@ export default async function CompanyPortalLessonContentPage({ params }: { param
     )
   }
 
+  if (lessonTree.type === 'quiz') {
+    return (
+      <LessonQuizClient
+        trainingId={resolvedParams.trainingId}
+        lessonId={resolvedParams.lessonId}
+        lessonTitle={lessonTree.title}
+        companyId={userProfile.companyId}
+        isPortal={true}
+      />
+    )
+  }
+
   return (
-    <LessonContentClient 
-      trainingId={resolvedParams.trainingId} 
+    <LessonContentClient
+      trainingId={resolvedParams.trainingId}
       lessonId={resolvedParams.lessonId}
       lessonTitle={lessonTree.title}
       companyId={userProfile.companyId}
