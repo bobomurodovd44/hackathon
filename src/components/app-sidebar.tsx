@@ -2,25 +2,14 @@
 
 import {
   Building2,
-  ChevronUp,
   Home,
   LayoutDashboard,
   LogOut,
-  Settings,
   ShieldCheck,
-  User,
   UserPlus,
   Users,
 } from "lucide-react"
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Sidebar,
   SidebarContent,
@@ -44,8 +33,6 @@ const navItems = [
   { title: "Trainings", url: "/company/trainings", icon: Users, roles: [UserRole.COMPANY_ADMIN] },
   { title: "Trainings", url: "/user/trainings", icon: Users, roles: [UserRole.WORKER] },
   { title: "Employees", url: "/company/users", icon: UserPlus, roles: [UserRole.COMPANY_ADMIN] },
-  { title: "My Profile", url: "/user", icon: User, roles: [UserRole.ADMIN, UserRole.COMPANY_ADMIN, UserRole.WORKER] },
-  { title: "Settings", url: "/settings", icon: Settings, roles: [UserRole.ADMIN, UserRole.COMPANY_ADMIN, UserRole.WORKER] },
 ]
 
 export function AppSidebar() {
@@ -100,52 +87,29 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
-                    {initials}
-                  </div>
-                  <div className="flex flex-col gap-0.5 leading-none text-left">
-                    <span className="font-semibold truncate">
-                      {user ? `${user.firstName} ${user.lastName}` : "User"}
-                    </span>
-                    <span className="text-xs text-muted-foreground truncate">
-                      {user?.email || "user@example.com"}
-                    </span>
-                  </div>
-                  <ChevronUp className="ml-auto size-4" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                align="start"
-                className="w-[--radix-popper-anchor-width]"
-              >
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <a href="/user">
-                    <User className="mr-2 size-4" />
-                    Profile
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <a href="/settings">
-                    <Settings className="mr-2 size-4" />
-                    Settings
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => logout()}>
-                  <LogOut className="mr-2 size-4" />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-3 px-3 py-2 border rounded-lg bg-card">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
+                {initials}
+              </div>
+              <div className="flex flex-col gap-0.5 leading-none text-left overflow-hidden">
+                <span className="font-semibold truncate text-sm">
+                  {user ? `${user.firstName} ${user.lastName}` : "User"}
+                </span>
+                <span className="text-[10px] text-muted-foreground truncate">
+                  {user?.email || "user@example.com"}
+                </span>
+              </div>
+            </div>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              onClick={() => logout()}
+              tooltip="Sign out"
+              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+            >
+              <LogOut className="mr-2 size-4" />
+              <span>Sign out</span>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
