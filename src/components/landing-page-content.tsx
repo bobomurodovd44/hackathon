@@ -12,13 +12,11 @@ import {
     Mail,
     CheckCircle2
 } from "lucide-react";
-import { useTranslation } from "@/i18n/provider";
 import { client } from "@/lib/feathers";
 
 import { FontSizeSelector } from "@/components/font-size-selector";
 
 export function LandingPageContent() {
-    const { lang, t } = useTranslation();
     const [user, setUser] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -34,9 +32,6 @@ export function LandingPageContent() {
                 setIsLoading(false);
             });
     }, []);
-
-    // Routing language
-    const targetLangUrl = lang === "ru" ? "/" : "/ru";
 
     return (
         <div className="min-h-screen bg-[#faf8f6] dark:bg-background text-foreground overflow-x-hidden selection:bg-[#eb6e4b]/30">
@@ -72,41 +67,29 @@ export function LandingPageContent() {
                             href="#"
                             className="hover:text-black dark:hover:text-white transition-colors"
                         >
-                            {t.nav.dashboard}
+                            Dashboard
                         </a>
                         <a
                             href="#"
                             className="hover:text-black dark:hover:text-white transition-colors"
                         >
-                            {t.nav.solutions}
+                            Solutions
                         </a>
                         <a
                             href="#"
                             className="hover:text-black dark:hover:text-white transition-colors"
                         >
-                            {t.nav.experts}
+                            Experts
                         </a>
                         <a
                             href="#"
                             className="hover:text-black dark:hover:text-white transition-colors"
                         >
-                            {t.nav.pricing}
+                            Pricing
                         </a>
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-4">
-                        <a
-                            href={targetLangUrl}
-                            className="flex items-center gap-1.5 md:gap-2 px-2 py-1.5 md:px-3 md:py-2 rounded-full text-xs md:text-sm font-bold text-gray-700 dark:text-gray-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-                        >
-                            <img
-                                src={lang === "ru" ? "/uz.svg" : "/ru.svg"}
-                                className="w-4 h-4 md:w-5 md:h-5 rounded-full object-cover"
-                                alt="Language Flag"
-                            />
-                            {lang === "ru" ? "Oʻz" : "Ру"}
-                        </a>
-
                         <FontSizeSelector />
 
                         {user ? (
@@ -115,7 +98,7 @@ export function LandingPageContent() {
                                 className="hidden sm:flex items-center gap-2 px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-bold text-sm"
                             >
                                 <User className="w-4 h-4" />
-                                {user.firstName || "Дашборд"}
+                                {user.firstName || "Dashboard"}
                             </a>
                         ) : (
                             <div className="flex items-center gap-2 hidden sm:flex">
@@ -123,7 +106,7 @@ export function LandingPageContent() {
                                     href="/login"
                                     className="px-4 py-2 text-sm font-bold text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white transition-colors"
                                 >
-                                    {t.auth.login}
+                                    Log in
                                 </a>
                                 
                             </div>
@@ -136,13 +119,13 @@ export function LandingPageContent() {
                                     href="/login"
                                     className="px-2 py-1 text-xs font-bold text-gray-700 dark:text-gray-300"
                                 >
-                                    {t.auth.login}
+                                    Log in
                                 </a>
                                 <a
                                     href="/connect"
                                     className="px-2 py-1 text-xs font-bold bg-[#eb6e4b] text-white rounded-md"
                                 >
-                                    {t.connect ? t.connect.badge : "Заявка"}
+                                    Access
                                 </a>
                             </div>
                         ) : (
@@ -151,7 +134,7 @@ export function LandingPageContent() {
                                     href="/dashboard"
                                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black text-white dark:bg-white dark:text-black font-bold text-xs"
                                 >
-                                    {user.firstName || "Дашборд"}
+                                    {user.firstName || "Dashboard"}
                                 </a>
                             </div>
                         )}
@@ -166,14 +149,14 @@ export function LandingPageContent() {
                         className="leading-[1.1] text-gray-900 dark:text-white font-mono font-extrabold tracking-tight text-balance animate-in slide-in-from-bottom-8 fade-in duration-1000"
                         style={{ fontSize: "clamp(40px, 8vw, 88px)" }}
                     >
-                        {t.hero.headlinePre}
+                        Scale your team with{" "}
                         <span className="text-[#eb6e4b]">
-                            {t.hero.headlineHighlight}
+                            Expert training
                         </span>
-                        {t.hero.headlinePost}
+                        {" "}driven by AI
                     </h1>
                     <p className="text-lg sm:text-xl md:text-[1.4rem] text-gray-600 dark:text-gray-400 font-medium max-w-3xl mx-auto md:leading-relaxed text-balance break-words animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-150">
-                        {t.hero.subhead}
+                        Empower your workforce with localized, expert-led training systems designed to accelerate growth and performance.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-6 md:pt-8 animate-in slide-in-from-bottom-12 fade-in duration-1000 delay-300">
                         <Button
@@ -181,7 +164,7 @@ export function LandingPageContent() {
                             className="h-14 px-8 text-lg font-bold rounded-xl w-full sm:w-auto shadow-[0_10px_40px_-10px_rgba(235,110,75,0.5)] transform hover:-translate-y-1 hover:shadow-[0_20px_50px_-10px_rgba(235,110,75,0.6)] transition-all bg-[#eb6e4b] hover:bg-[#d45e3c] text-white border-none"
                             asChild
                         >
-                            <a href="/connect">{t.hero.btnPrimary}</a>
+                            <a href="/login">Get Started</a>
                         </Button>
                         <Button
                             size="lg"
@@ -189,7 +172,7 @@ export function LandingPageContent() {
                             className="h-14 px-8 text-lg font-bold rounded-xl w-full sm:w-auto border-2 border-gray-300 hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-500 bg-transparent text-gray-800 dark:text-gray-200 hover:bg-black/5 dark:hover:bg-white/5 transition-all transform hover:-translate-y-1"
                             asChild
                         >
-                            <a href="/connect">{t.hero.btnExpert}</a>
+                            <a href="/login">Talk to Expert</a>
                         </Button>
                     </div>
                 </div>
@@ -201,28 +184,28 @@ export function LandingPageContent() {
                     <div className="grid grid-cols-3 gap-4 md:gap-8">
                         <div className="text-center space-y-2 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
                             <span className="block text-4xl sm:text-5xl md:text-7xl font-mono font-black text-[#eb6e4b] tracking-tighter">
-                                {t.stats.speed}
+                                10x
                             </span>
                             <span className="block text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 font-semibold">
-                                {t.stats.speedLabel}
+                                Faster Growth
                             </span>
                         </div>
                         <div className="text-center space-y-2 relative animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
                             <div className="absolute inset-y-0 -left-2 w-px bg-gradient-to-b from-transparent via-gray-300 dark:via-gray-700 to-transparent" />
                             <div className="absolute inset-y-0 -right-2 w-px bg-gradient-to-b from-transparent via-gray-300 dark:via-gray-700 to-transparent" />
                             <span className="block text-4xl sm:text-5xl md:text-7xl font-mono font-black text-gray-900 dark:text-white tracking-tighter">
-                                {t.stats.time}
+                                24/7
                             </span>
                             <span className="block text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 font-semibold">
-                                {t.stats.timeLabel}
+                                Support
                             </span>
                         </div>
                         <div className="text-center space-y-2 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
                             <span className="block text-4xl sm:text-5xl md:text-7xl font-mono font-black text-[#eb6e4b] tracking-tighter">
-                                {t.stats.roles}
+                                50+
                             </span>
                             <span className="block text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 font-semibold">
-                                {t.stats.rolesLabel}
+                                Experts
                             </span>
                         </div>
                     </div>
@@ -233,7 +216,7 @@ export function LandingPageContent() {
             <section className="relative py-24 md:py-36 px-6 md:px-12 z-10">
                 <div className="container mx-auto max-w-4xl text-center space-y-8 md:space-y-12">
                     <h2 className="text-3xl md:text-4xl lg:text-[2.75rem] text-gray-900 dark:text-white font-mono font-extrabold mb-8 md:mb-16 animate-in slide-in-from-bottom-10 fade-in duration-1000">
-                        {t.mission.title}
+                        Our Mission
                     </h2>
 
                     <div className="relative group mx-2 sm:mx-0">
@@ -250,8 +233,9 @@ export function LandingPageContent() {
 
                             <p 
                                 className="text-lg sm:text-2xl md:text-3xl font-medium leading-relaxed md:leading-[1.7] relative z-10 text-gray-700 dark:text-gray-300 text-balance"
-                                dangerouslySetInnerHTML={{ __html: t.mission.text }}
-                            />
+                            >
+                                We bridge the gap between human potential and technological advancement by delivering <strong>context-aware, expert-led training</strong> that scales with your business.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -261,7 +245,7 @@ export function LandingPageContent() {
             <section className="relative z-10 py-20 md:py-28 px-6 md:px-12">
                 <div className="container mx-auto max-w-6xl relative">
                     <h2 className="text-3xl md:text-5xl font-mono font-extrabold text-center mb-16 md:mb-20 text-gray-900 dark:text-white animate-in fade-in slide-in-from-bottom-8 duration-700">
-                        {t.howItWorks.title}
+                        How it Works
                     </h2>
 
                     <div className="grid md:grid-cols-3 gap-6 md:gap-8">
@@ -271,10 +255,10 @@ export function LandingPageContent() {
                                 1
                             </div>
                             <h3 className="text-xl md:text-2xl font-bold mb-3 font-mono tracking-tight text-gray-900 dark:text-white">
-                                {t.howItWorks.step1Title}
+                                Assessment
                             </h3>
                             <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
-                                {t.howItWorks.step1Desc}
+                                We evaluate your current workforce capabilities and identify key areas for growth.
                             </p>
                         </div>
 
@@ -284,10 +268,10 @@ export function LandingPageContent() {
                                 2
                             </div>
                             <h3 className="text-xl md:text-2xl font-bold mb-3 font-mono tracking-tight text-gray-900 dark:text-white">
-                                {t.howItWorks.step2Title}
+                                Integration
                             </h3>
                             <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
-                                {t.howItWorks.step2Desc}
+                                Our AI-expert systems integrate seamlessly into your workflow with localized content.
                             </p>
                         </div>
 
@@ -297,10 +281,10 @@ export function LandingPageContent() {
                                 3
                             </div>
                             <h3 className="text-xl md:text-2xl font-bold mb-3 font-mono tracking-tight text-gray-900 dark:text-white">
-                                {t.howItWorks.step3Title}
+                                Growth
                             </h3>
                             <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
-                                {t.howItWorks.step3Desc}
+                                Track real-time performance and see the immediate ROI of expert-led training.
                             </p>
                         </div>
                     </div>
@@ -316,13 +300,13 @@ export function LandingPageContent() {
                         <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-700 delay-100">
                             <div>
                                 <h2 className="text-4xl md:text-5xl lg:text-5xl font-mono font-black mb-4 leading-tight text-white">
-                                    {t.expertsSection.title}
+                                    Meet the Experts
                                 </h2>
                                 <span className="inline-block py-1 pr-4 text-[#eb6e4b] font-mono font-bold tracking-widest uppercase text-sm mb-4">
-                                    {t.expertsSection.subtitle}
+                                    World-Class Training
                                 </span>
                                 <p className="text-gray-400 text-lg leading-relaxed">
-                                    {t.expertsSection.description}
+                                    Our platform connects your team with industry-leading courses designed by veterans in Sales, Finance, and HR.
                                 </p>
                             </div>
 
@@ -333,10 +317,10 @@ export function LandingPageContent() {
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold mb-2 text-white">
-                                            {t.expertsSection.feature1Title}
+                                            Performance Coaching
                                         </h3>
                                         <p className="text-gray-400 text-sm leading-relaxed">
-                                            {t.expertsSection.feature1Desc}
+                                            Real-time feedback loops driven by AI to correct and improve behavior.
                                         </p>
                                     </div>
                                 </div>
@@ -346,10 +330,10 @@ export function LandingPageContent() {
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold mb-2 text-white">
-                                            {t.expertsSection.feature2Title}
+                                            Rapid Skill Acquisition
                                         </h3>
                                         <p className="text-gray-400 text-sm leading-relaxed">
-                                            {t.expertsSection.feature2Desc}
+                                            Compressed learning cycles to get your team productive faster than ever.
                                         </p>
                                     </div>
                                 </div>
@@ -361,7 +345,7 @@ export function LandingPageContent() {
                             <div className="absolute -inset-4 bg-gradient-to-tr from-[#eb6e4b]/20 blur-3xl opacity-50 rounded-full"></div>
                             <div className="relative bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-sm">
                                 <h3 className="text-2xl font-mono font-bold text-center lg:text-left mb-6 text-white">
-                                    {t.expertsSection.domainsTitle}
+                                    Available Domains
                                 </h3>
 
                                 <div className="flex flex-col gap-4">
@@ -379,14 +363,14 @@ export function LandingPageContent() {
                                         </div>
                                         <div className="flex-1 w-full text-center sm:text-left flex flex-col justify-center">
                                             <h4 className="font-bold text-lg mb-3 text-white">
-                                                {t.expertsSection.sales.title}
+                                                Sales Masters
                                             </h4>
                                             <Button
                                                 size="sm"
                                                 variant="outline"
                                                 className="border-[#eb6e4b] text-[#eb6e4b] hover:bg-[#eb6e4b] hover:text-white bg-transparent transition-colors sm:self-start self-center w-full sm:w-auto"
                                             >
-                                                {t.expertsSection.sales.btn}
+                                                Learn More
                                             </Button>
                                         </div>
                                     </div>
@@ -405,14 +389,14 @@ export function LandingPageContent() {
                                         </div>
                                         <div className="flex-1 w-full text-center sm:text-left flex flex-col justify-center">
                                             <h4 className="font-bold text-lg mb-3 text-white">
-                                                {t.expertsSection.finance.title}
+                                                Finance Operations
                                             </h4>
                                             <Button
                                                 size="sm"
                                                 variant="outline"
                                                 className="border-[#eb6e4b] text-[#eb6e4b] hover:bg-[#eb6e4b] hover:text-white bg-transparent transition-colors sm:self-start self-center w-full sm:w-auto"
                                             >
-                                                {t.expertsSection.finance.btn}
+                                                Learn More
                                             </Button>
                                         </div>
                                     </div>
@@ -431,14 +415,14 @@ export function LandingPageContent() {
                                         </div>
                                         <div className="flex-1 w-full text-center sm:text-left flex flex-col justify-center">
                                             <h4 className="font-bold text-lg mb-3 text-white">
-                                                {t.expertsSection.hr.title}
+                                                HR & Culture
                                             </h4>
                                             <Button
                                                 size="sm"
                                                 variant="outline"
                                                 className="border-[#eb6e4b] text-[#eb6e4b] hover:bg-[#eb6e4b] hover:text-white bg-transparent transition-colors sm:self-start self-center w-full sm:w-auto"
                                             >
-                                                {t.expertsSection.hr.btn}
+                                                Learn More
                                             </Button>
                                         </div>
                                     </div>
@@ -460,10 +444,10 @@ export function LandingPageContent() {
                             Select Your Path
                         </span>
                         <h2 className="text-3xl md:text-6xl font-mono font-black text-gray-900 dark:text-white tracking-tighter">
-                            {t.pricingSection.title}
+                            Pricing Plans
                         </h2>
                         <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto text-base md:text-lg">
-                            {t.pricingSection.subtitle}
+                            Choose the right path for your organization's growth.
                         </p>
                     </div>
 
@@ -476,27 +460,37 @@ export function LandingPageContent() {
                                 <User className="w-32 h-32" />
                             </div>
                             <div className="relative z-10 flex flex-col h-full">
-                                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2">{t.pricingSection.individualTitle}</h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-xs md:text-sm mb-6 max-w-[250px]">{t.pricingSection.individualDesc}</p>
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2">Starter</h3>
+                                <p className="text-gray-500 dark:text-gray-400 text-xs md:text-sm mb-6 max-w-[250px]">Perfect for individuals and small teams looking to optimize specific roles.</p>
                                 
                                 <div className="flex items-start gap-1 mb-8 border-b border-gray-100 dark:border-white/10 pb-6 md:pb-8">
-                                    <span className="text-5xl md:text-6xl font-black tracking-tighter text-gray-900 dark:text-white">{t.pricingSection.individualPrice}</span>
-                                    <span className="text-gray-500 dark:text-gray-400 text-xs md:text-sm font-medium mt-2 max-w-[70px] leading-tight">{t.pricingSection.individualUnit}</span>
+                                    <span className="text-5xl md:text-6xl font-black tracking-tighter text-gray-900 dark:text-white">$29</span>
+                                    <span className="text-gray-500 dark:text-gray-400 text-xs md:text-sm font-medium mt-2 max-w-[70px] leading-tight">per user / month</span>
                                 </div>
                                 
                                 <ul className="space-y-4 mb-8 flex-1">
-                                    {t.pricingSection.individualFeatures.map((feature: string, i: number) => (
-                                        <li key={i} className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center shrink-0">
-                                                <CheckCircle2 className="w-3 h-3 md:w-3.5 md:h-3.5 text-gray-900 dark:text-white" />
-                                            </div>
-                                            <span>{feature}</span>
-                                        </li>
-                                    ))}
+                                    <li className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center shrink-0">
+                                            <CheckCircle2 className="w-3 h-3 md:w-3.5 md:h-3.5 text-gray-900 dark:text-white" />
+                                        </div>
+                                        <span>All Core Modules</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center shrink-0">
+                                            <CheckCircle2 className="w-3 h-3 md:w-3.5 md:h-3.5 text-gray-900 dark:text-white" />
+                                        </div>
+                                        <span>AI Performance Tracking</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center shrink-0">
+                                            <CheckCircle2 className="w-3 h-3 md:w-3.5 md:h-3.5 text-gray-900 dark:text-white" />
+                                        </div>
+                                        <span>Standard Support</span>
+                                    </li>
                                 </ul>
 
                                 <Button asChild size="lg" className="w-full bg-transparent border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black rounded-xl md:rounded-2xl h-12 md:h-14 font-bold text-base md:text-lg transition-all duration-300 mt-auto">
-                                    <a href="/connect">{t.pricingSection.individualBtn}</a>
+                                    <a href="/login">Get Started</a>
                                 </Button>
                             </div>
                         </div>
@@ -509,28 +503,44 @@ export function LandingPageContent() {
                             
                             <div className="relative z-10 flex flex-col h-full">
                                 <div className="flex items-center space-x-3 mb-3 md:mb-4">
-                                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">{t.pricingSection.enterpriseTitle}</h3>
+                                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">Enterprise</h3>
                                     <span className="px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-black bg-gradient-to-r from-[#eb6e4b] to-orange-400 text-white uppercase tracking-widest shadow-[0_0_20px_rgba(235,110,75,0.4)]">Pro</span>
                                 </div>
-                                <p className="text-gray-400 text-xs sm:text-base md:text-lg mb-6 md:mb-8 max-w-[280px] sm:max-w-sm">{t.pricingSection.enterpriseDesc}</p>
+                                <p className="text-gray-400 text-xs sm:text-base md:text-lg mb-6 md:mb-8 max-w-[280px] sm:max-w-sm">Custom solutions for large organizations requiring full-scale digital transformation.</p>
                                 
                                 <div className="flex items-center gap-1 mb-6 md:mb-10 border-b border-white/10 pb-6 md:pb-8">
-                                    <span className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">{t.pricingSection.enterprisePrice}</span>
+                                    <span className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Custom</span>
                                 </div>
                                 
                                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-12 flex-1">
-                                    {t.pricingSection.enterpriseFeatures.map((feature: string, i: number) => (
-                                        <li key={i} className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-bold text-gray-200">
-                                            <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg md:rounded-xl bg-gradient-to-br from-[#eb6e4b] to-orange-600 flex items-center justify-center shrink-0 shadow-lg shadow-[#eb6e4b]/20">
-                                                <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                                            </div>
-                                            <span>{feature}</span>
-                                        </li>
-                                    ))}
+                                    <li className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-bold text-gray-200">
+                                        <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg md:rounded-xl bg-gradient-to-br from-[#eb6e4b] to-orange-600 flex items-center justify-center shrink-0 shadow-lg shadow-[#eb6e4b]/20">
+                                            <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                        </div>
+                                        <span>Unlimited Users</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-bold text-gray-200">
+                                        <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg md:rounded-xl bg-gradient-to-br from-[#eb6e4b] to-orange-600 flex items-center justify-center shrink-0 shadow-lg shadow-[#eb6e4b]/20">
+                                            <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                        </div>
+                                        <span>Custom Course Creation</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-bold text-gray-200">
+                                        <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg md:rounded-xl bg-gradient-to-br from-[#eb6e4b] to-orange-600 flex items-center justify-center shrink-0 shadow-lg shadow-[#eb6e4b]/20">
+                                            <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                        </div>
+                                        <span>Dedicated Support</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-bold text-gray-200">
+                                        <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg md:rounded-xl bg-gradient-to-br from-[#eb6e4b] to-orange-600 flex items-center justify-center shrink-0 shadow-lg shadow-[#eb6e4b]/20">
+                                            <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                        </div>
+                                        <span>API Integration</span>
+                                    </li>
                                 </ul>
 
                                 <Button asChild size="lg" className="w-full bg-[#eb6e4b] hover:bg-[#d45e3c] text-white rounded-xl md:rounded-2xl h-12 md:h-16 text-base md:text-lg font-black tracking-wide shadow-[0_0_20px_rgba(235,110,75,0.3)] md:shadow-[0_0_40px_rgba(235,110,75,0.3)] hover:shadow-[0_0_60px_rgba(235,110,75,0.5)] transition-all duration-300 translate-y-0 hover:-translate-y-1 mt-auto">
-                                    <a href="/connect">{t.pricingSection.enterpriseBtn}</a>
+                                    <a href="/login">Contact Sales</a>
                                 </Button>
                             </div>
                         </div>
@@ -556,7 +566,7 @@ export function LandingPageContent() {
                                 </span>
                             </div>
                             <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                {t.footer.description}
+                                The leading platform for AI-driven expert training and performance management.
                             </p>
                             <div className="flex items-center gap-4 pt-2">
                                 <a
@@ -583,7 +593,7 @@ export function LandingPageContent() {
                         {/* Links 1 */}
                         <div className="space-y-4">
                             <h4 className="font-bold text-gray-900 dark:text-white">
-                                {t.footer.product}
+                                Product
                             </h4>
                             <ul className="space-y-3">
                                 <li>
@@ -591,7 +601,7 @@ export function LandingPageContent() {
                                         href="#"
                                         className="text-sm text-gray-500 dark:text-gray-400 hover:text-[#eb6e4b] transition-colors"
                                     >
-                                        {t.footer.features}
+                                        Features
                                     </a>
                                 </li>
                                 <li>
@@ -599,7 +609,7 @@ export function LandingPageContent() {
                                         href="#"
                                         className="text-sm text-gray-500 dark:text-gray-400 hover:text-[#eb6e4b] transition-colors"
                                     >
-                                        {t.footer.pricing}
+                                        Pricing
                                     </a>
                                 </li>
                                 <li>
@@ -607,7 +617,7 @@ export function LandingPageContent() {
                                         href="#"
                                         className="text-sm text-gray-500 dark:text-gray-400 hover:text-[#eb6e4b] transition-colors"
                                     >
-                                        {t.footer.experts}
+                                        Experts
                                     </a>
                                 </li>
                             </ul>
@@ -616,7 +626,7 @@ export function LandingPageContent() {
                         {/* Links 2 */}
                         <div className="space-y-4">
                             <h4 className="font-bold text-gray-900 dark:text-white">
-                                {t.footer.company}
+                                Company
                             </h4>
                             <ul className="space-y-3">
                                 <li>
@@ -624,7 +634,7 @@ export function LandingPageContent() {
                                         href="#"
                                         className="text-sm text-gray-500 dark:text-gray-400 hover:text-[#eb6e4b] transition-colors"
                                     >
-                                        {t.footer.about}
+                                        About Us
                                     </a>
                                 </li>
                                 <li>
@@ -632,7 +642,7 @@ export function LandingPageContent() {
                                         href="#"
                                         className="text-sm text-gray-500 dark:text-gray-400 hover:text-[#eb6e4b] transition-colors"
                                     >
-                                        {t.footer.contact}
+                                        Contact
                                     </a>
                                 </li>
                             </ul>
@@ -641,7 +651,7 @@ export function LandingPageContent() {
                         {/* Links 3 */}
                         <div className="space-y-4">
                             <h4 className="font-bold text-gray-900 dark:text-white">
-                                {t.footer.legal}
+                                Legal
                             </h4>
                             <ul className="space-y-3">
                                 <li>
@@ -649,7 +659,7 @@ export function LandingPageContent() {
                                         href="#"
                                         className="text-sm text-gray-500 dark:text-gray-400 hover:text-[#eb6e4b] transition-colors"
                                     >
-                                        {t.footer.privacy}
+                                        Privacy Policy
                                     </a>
                                 </li>
                                 <li>
@@ -657,7 +667,7 @@ export function LandingPageContent() {
                                         href="#"
                                         className="text-sm text-gray-500 dark:text-gray-400 hover:text-[#eb6e4b] transition-colors"
                                     >
-                                        {t.footer.terms}
+                                        Terms of Service
                                     </a>
                                 </li>
                             </ul>
@@ -666,8 +676,7 @@ export function LandingPageContent() {
 
                     <div className="pt-8 border-t border-gray-200 dark:border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
                         <p className="text-sm text-gray-500 dark:text-gray-400 text-center md:text-left">
-                            © {new Date().getFullYear()} Climb AI.{" "}
-                            {t.footer.rights}
+                            © {new Date().getFullYear()} Climb AI. All rights reserved.
                         </p>
                         <div className="flex items-center gap-2">
 
