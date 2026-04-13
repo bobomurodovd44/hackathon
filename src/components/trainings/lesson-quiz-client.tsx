@@ -8,6 +8,7 @@ import {
 import Link from "next/link"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { toast } from "sonner"
 
 import { client } from "@/lib/feathers"
 import { Button } from "@/components/ui/button"
@@ -109,6 +110,7 @@ export function LessonQuizClient({
     setHasUnsaved(true)
   }
 
+
   // ── Save ──────────────────────────────────────────────────────────────────
   const handleSave = async () => {
     setIsSaving(true)
@@ -126,9 +128,9 @@ export function LessonQuizClient({
         setExistingQuizId(created._id)
       }
       setHasUnsaved(false)
-      alert('Quiz saved successfully!')
+      toast.success('Quiz saved successfully!')
     } catch (err: any) {
-      alert(err.message || 'Failed to save quiz.')
+      toast.error(err.message || 'Failed to save quiz.')
     } finally {
       setIsSaving(false)
     }

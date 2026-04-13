@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   description: "A premium hackathon management platform",
 };
 
+import { Toaster } from "sonner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -49,6 +51,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <AuthProvider>
           <TooltipProvider>{children}</TooltipProvider>
+          <Toaster position="top-center" richColors />
         </AuthProvider>
       </body>
     </html>

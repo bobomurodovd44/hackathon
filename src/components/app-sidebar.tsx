@@ -51,12 +51,20 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <LayoutDashboard className="size-4" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
+                  <img src="/logo.svg" alt="Climb AI Logo" className="size-6 object-contain" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Hackathon</span>
-                  <span className="text-xs text-muted-foreground">Portal</span>
+                  <span className="font-semibold">
+                    {(user?.role === UserRole.COMPANY_ADMIN || user?.role === UserRole.WORKER) 
+                      ? (user?.company?.name || "Climb AI") 
+                      : "Climb AI"}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {(user?.role === UserRole.COMPANY_ADMIN || user?.role === UserRole.WORKER) 
+                      ? (user?.company?.industry || "Expert System") 
+                      : "Expert System"}
+                  </span>
                 </div>
               </a>
             </SidebarMenuButton>

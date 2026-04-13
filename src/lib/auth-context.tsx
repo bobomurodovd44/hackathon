@@ -17,6 +17,10 @@ interface User {
   lastName: string
   role: UserRole
   companyId?: string
+  company?: {
+    name: string
+    industry: string
+  }
 }
 
 interface AuthContextType {
@@ -35,6 +39,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
+  const fetchCompanyData = async (userData: User) => {
+    if ((userData.role === UserRole.COMPANY_ADMIN || userData.role === UserRole.WORKER) && userData.companyId) {
+      try {
+        const company = await client.service('companies').get(userData.companyId)
+        return {
+          ...userData,
+          company: {
+            name: company.name,
+            industry: company.industry
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch company data:', error)
+      }
+    }
+    return userData
+  }
+
   const getDashboardPath = (user: User | null) => {
     if (!user) return '/login'
     switch (user.role) {
@@ -52,7 +74,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const authenticate = async () => {
     try {
       const response = await client.authenticate()
-      setUser(response.user)
+      const userWithCompany = await fetchCompanyData(response.user)
+      setUser(userWithCompany)
     } catch (error) {
       setUser(null)
     } finally {
@@ -71,8 +94,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         strategy: 'local',
         ...credentials
       })
-      setUser(response.user)
-      router.push(getDashboardPath(response.user))
+      const userWithCompany = await fetchCompanyData(response.user)
+      setUser(userWithCompany)
+      router.push(getDashboardPath(userWithCompany))
     } catch (error) {
       setUser(null)
       throw error
