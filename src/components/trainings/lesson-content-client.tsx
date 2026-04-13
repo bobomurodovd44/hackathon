@@ -53,7 +53,6 @@ export function LessonContentClient({
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [chatPrompt, setChatPrompt] = useState("")
-  const [chatMode, setChatMode] = useState<'markdown_gen' | 'plan_gen' | 'ask'>('markdown_gen')
   const [isChatLoading, setIsChatLoading] = useState(false)
   const chatBottomRef = useRef<HTMLDivElement>(null)
   const chatInputRef = useRef<HTMLTextAreaElement>(null)
@@ -196,12 +195,13 @@ export function LessonContentClient({
 
     try {
       const result: any = await client.service('ai-chat').create({
-        type: chatMode,
+        type: 'auto',
         lessonId,
         prompt: trimmed
       })
 
       const aiMarkdown: string = result.response || ''
+      const resolvedType: string = result.type || 'markdown_gen'
 
       // Replace loading message with real response
       setChatMessages(prev => [
@@ -210,7 +210,7 @@ export function LessonContentClient({
       ])
 
       // Auto-paste markdown into the editor if in generation mode
-      if (aiMarkdown.trim() && (chatMode === 'markdown_gen' || chatMode === 'plan_gen')) {
+      if (aiMarkdown.trim() && resolvedType === 'markdown_gen') {
         const separator = markdown.trim() ? '\n\n---\n\n' : ''
         handleMarkdownChange(markdown + separator + aiMarkdown)
       }
@@ -402,30 +402,6 @@ export function LessonContentClient({
           </button>
         </div>
 
-        {/* Mode Selector */}
-        <div className="px-3 py-2 border-b bg-muted/30 flex items-center justify-between">
-          <div className="flex bg-muted p-0.5 rounded-lg w-full">
-            <button
-              onClick={() => setChatMode('plan_gen')}
-              className={`flex-1 text-[10px] uppercase tracking-wider font-bold py-1.5 rounded-md transition-all ${chatMode === 'plan_gen' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
-            >
-              Plan
-            </button>
-            <button
-              onClick={() => setChatMode('markdown_gen')}
-              className={`flex-1 text-[10px] uppercase tracking-wider font-bold py-1.5 rounded-md transition-all ${chatMode === 'markdown_gen' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
-            >
-              Markdown
-            </button>
-            <button
-              onClick={() => setChatMode('ask')}
-              className={`flex-1 text-[10px] uppercase tracking-wider font-bold py-1.5 rounded-md transition-all ${chatMode === 'ask' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
-            >
-              Ask
-            </button>
-          </div>
-        </div>
-
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
           {chatMessages.length === 0 && (
@@ -440,37 +416,15 @@ export function LessonContentClient({
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 justify-center mt-1">
-                {chatMode === 'plan_gen' ? (
-                  ["Outline this lesson", "Create a learning path", "Module structure"].map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      onClick={() => setChatPrompt(suggestion)}
-                      className="rounded-full border px-3 py-1 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                    >
-                      {suggestion}
-                    </button>
-                  ))
-                ) : chatMode === 'ask' ? (
-                  ["Explain this topic", "How to teach this?", "Engagement tips"].map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      onClick={() => setChatPrompt(suggestion)}
-                      className="rounded-full border px-3 py-1 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                    >
-                      {suggestion}
-                    </button>
-                  ))
-                ) : (
-                  ["Write an introduction", "Create a quiz section", "Add practical examples"].map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      onClick={() => setChatPrompt(suggestion)}
-                      className="rounded-full border px-3 py-1 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                    >
-                      {suggestion}
-                    </button>
-                  ))
-                )}
+                {["Outline this lesson", "Explain this topic", "Write the introduction"].map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    onClick={() => setChatPrompt(suggestion)}
+                    className="rounded-full border px-3 py-1 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
               </div>
             </div>
           )}
