@@ -42,6 +42,7 @@ const navItems = [
   { title: "Trainings", url: "/admin/trainings", icon: Users, roles: [UserRole.ADMIN] },
   { title: "Company Portal", url: "/company", icon: Building2, roles: [UserRole.COMPANY_ADMIN] },
   { title: "Trainings", url: "/company/trainings", icon: Users, roles: [UserRole.COMPANY_ADMIN] },
+  { title: "Trainings", url: "/user/trainings", icon: Users, roles: [UserRole.WORKER] },
   { title: "Employees", url: "/company/users", icon: UserPlus, roles: [UserRole.COMPANY_ADMIN] },
   { title: "My Profile", url: "/user", icon: User, roles: [UserRole.ADMIN, UserRole.COMPANY_ADMIN, UserRole.WORKER] },
   { title: "Settings", url: "/settings", icon: Settings, roles: [UserRole.ADMIN, UserRole.COMPANY_ADMIN, UserRole.WORKER] },
