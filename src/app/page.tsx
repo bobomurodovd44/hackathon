@@ -1,9 +1,5 @@
-import { AuthGuard } from '@/components/auth-guard'
+import { LandingPageContent } from "@/components/landing-page-content"
 
 export default function Home() {
-  return (
-    <AuthGuard variant="public">
-      <h1>Home</h1>
-    </AuthGuard>
-  )
+  return <LandingPageContent />
 }
