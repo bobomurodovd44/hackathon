@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { uploadFile } from "@/lib/upload"
 import { FileUpload } from "@/components/ui/file-upload"
 import jsCookie from "js-cookie"
+import { toast } from "sonner"
 
 interface LessonContentClientProps {
   companyId?: string
@@ -172,10 +173,10 @@ export function LessonContentClient({
       
       localStorage.removeItem(`draft_lesson_${lessonId}`)
       setHasUnsavedChanges(false)
-      alert("Lesson content saved successfully!")
+      toast.success("Lesson content saved successfully!")
     } catch (error: any) {
       console.error(error)
-      alert(error.message || "Failed to save lesson content. Check rules.")
+      toast.error(error.message || "Failed to save lesson content. Check rules.")
     } finally {
       setIsSaving(false)
     }
@@ -312,7 +313,7 @@ export function LessonContentClient({
                   setUploadProgress(100)
                   setUploadStatus("Upload complete!")
                 } catch (error: any) {
-                  alert(`Upload failed: ${error.message}`)
+                  toast.error(`Upload failed: ${error.message}`)
                 } finally {
                   setIsUploading(false)
                 }
